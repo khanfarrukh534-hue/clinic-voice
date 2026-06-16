@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import Image from 'next/image';
 
 interface ChatMessage {
   question: string;
@@ -11,7 +12,7 @@ interface ChatMessage {
 export default function Home() {
   const [question, setQuestion] = useState('');
   const [loading, setLoading] = useState(false);
-  const [history, setHistory] = useState<ChatMessage[]>([]);
+  const [history, setHistory] = useState<ChatMessage[]>([] as ChatMessage[]);
   const [showPatients, setShowPatients] = useState(false);
   const [patients, setPatients] = useState<any[]>([]);
 
@@ -52,21 +53,25 @@ export default function Home() {
 
   return (
     <div className="h-screen flex flex-col bg-[#F5F2ED]">
-      {/* Header */}
-      <header className="bg-[#1A1D23] border-b border-[#1A1D23]/10 px-4 py-3 flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-[#FF6B00] rounded-lg flex items-center justify-center">
-            <span className="text-white text-lg">🏥</span>
-          </div>
-          <h1 className="font-semibold text-lg">Clinic AI</h1>
+      {/* Navbar with Logo */}
+      <nav className="bg-[#1A1D23] px-4 py-3 flex items-center justify-between shadow-md">
+        <div className="flex items-center gap-3">
+          <Image 
+            src="/images/logo.jpg" 
+            alt="Blackburn Digital" 
+            width={140} 
+            height={40} 
+            className="h-8 w-auto"
+          />
+          <span className="text-[#F5F2ED]/60 text-sm font-medium">| Clinic AI</span>
         </div>
         <button
           onClick={() => setShowPatients(true)}
-          className="text-sm bg-[#FF6B00]/10 border border-[#FF6B00]/20 hover:bg-[#FF6B00]/20 text-[#1A1D23] px-3 py-1.5 rounded-lg transition-colors"
+          className="text-sm bg-[#FF6B00] hover:bg-[#FF6B00]/90 text-white px-4 py-2 rounded-lg transition-colors font-medium"
         >
           📋 View All Patients
         </button>
-      </header>
+      </nav>
 
       {/* Chat Area */}
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -134,42 +139,42 @@ export default function Home() {
       {showPatients && (
         <div className="fixed inset-0 bg-[#1A1D23]/50 flex items-center justify-center z-50 p-4">
           <div className="bg-[#F5F2ED] rounded-2xl w-full max-w-4xl max-h-[80vh] overflow-hidden shadow-2xl">
-            <div className="p-4 border-b border-[#1A1D23]/10 flex items-center justify-between">
-              <h2 className="font-semibold text-lg">All Patients ({patients.length})</h2>
+            <div className="p-4 border-b border-[#1A1D23]/10 flex items-center justify-between bg-[#1A1D23]">
+              <h2 className="font-semibold text-lg text-[#F5F2ED]">All Patients ({patients.length})</h2>
               <button 
                 onClick={() => setShowPatients(false)}
-                className="w-8 h-8 hover:bg-[#1A1D23]/10 text-[#1A1D23] rounded-full flex items-center justify-center transition-colors"
+                className="w-8 h-8 hover:bg-[#F5F2ED]/10 text-[#F5F2ED] rounded-full flex items-center justify-center transition-colors"
               >
                 ✕
               </button>
             </div>
             <div className="overflow-auto p-4 max-h-[60vh]">
               <table className="w-full text-sm">
-                <thead className="bg-[#1A1D23]/5 sticky top-0">
+                <thead className="bg-[#1A1D23] sticky top-0">
                   <tr>
-                    <th className="p-3 text-left font-medium text-[#1A1D23]/70">Name</th>
-                    <th className="p-3 text-left font-medium text-[#1A1D23]/70">Date</th>
-                    <th className="p-3 text-left font-medium text-[#1A1D23]/70">Time</th>
-                    <th className="p-3 text-left font-medium text-[#1A1D23]/70">Treatment</th>
-                    <th className="p-3 text-left font-medium text-[#1A1D23]/70">Status</th>
+                    <th className="p-3 text-left font-medium text-[#F5F2ED]">Name</th>
+                    <th className="p-3 text-left font-medium text-[#F5F2ED]">Date</th>
+                    <th className="p-3 text-left font-medium text-[#F5F2ED]">Time</th>
+                    <th className="p-3 text-left font-medium text-[#F5F2ED]">Treatment</th>
+                    <th className="p-3 text-left font-medium text-[#F5F2ED]">Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {patients.map((patient: any, i: number) => (
-                    <tr key={i} className="border-b hover:bg-[#1A1D23]/10">
-                      <td className="p-3 font-medium">{patient.name}</td>
+                    <tr key={i} className="border-b border-[#1A1D23]/10 hover:bg-[#FF6B00]/5">
+                      <td className="p-3 font-medium text-[#1A1D23]">{patient.name}</td>
                       <td className="p-3 text-[#1A1D23]/70">{patient.date}</td>
                       <td className="p-3 text-[#1A1D23]/70">{patient.time}</td>
                       <td className="p-3">
-                        <span className="bg-[#FF6B00]/10 text-[#FF6B00] px-2 py-1 rounded-md text-xs">
+                        <span className="bg-[#FF6B00]/10 text-[#FF6B00] px-2 py-1 rounded-md text-xs font-medium">
                           {patient.treatment}
                         </span>
                       </td>
                       <td className="p-3">
                         <span className={`px-2 py-1 rounded-md text-xs font-medium ${
                           patient.status === 'Upcoming' ? 'bg-[#FF6B00]/10 text-[#FF6B00]' :
-                          patient.status === 'Completed' ? 'bg-green-50 text-green-700' :
-                          patient.status === 'Missed' ? 'bg-red-50 text-red-700' :
+                          patient.status === 'Completed' ? 'bg-green-100 text-green-700' :
+                          patient.status === 'Missed' ? 'bg-red-100 text-red-700' :
                           'bg-[#1A1D23]/5 text-[#1A1D23]/70'
                         }`}>
                           {patient.status}
